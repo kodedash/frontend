@@ -1,1 +1,19 @@
-bun test
+#!/bin/sh
+
+# Get current branch name
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+# Allowed branch prefixes
+ALLOWED_PREFIXES="^(feature/|bugfix/|feat/|fix/|test/|hotfix/)"
+
+if ! echo "$BRANCH_NAME" | grep -Eq "$ALLOWED_PREFIXES"; then
+  echo "❌ ERROR: Branch name '$BRANCH_NAME' is not allowed."
+  echo "✅ Allowed prefixes: feature/, bugfix/, feat/, fix/, test/, hotfix/"
+  exit 1
+fi
+
+echo "✅ Branch name '$BRANCH_NAME' is valid."
+
+# Run linting before committing
+echo "🔍 Running lint..."
+npm run lint || exit 1
